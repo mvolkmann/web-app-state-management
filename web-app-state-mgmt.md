@@ -17,34 +17,33 @@ One reason for this is the desire for state changes
 to be reflected by re-rendering all components
 that care about particular pieces of data.
 An example of a library that provides this functionality
-is Redux. It can be used with many frameworks
+is Redux.  It can be used with many frameworks
 and is especially popular in React applications.
 
 ## Goals
 
 Goals for state management include:
 
-1. Enable writing components that can just render
-   data passed to them (in React using "props").
-2. It should be easy to specify the state properties
-   used by each component whose changes
-   should cause a component to re-render.
-3. It should be easy to replace the current state with new state.
-4. It should be easy to retrieve the current state.
-5. It should be easy to register functions
-   that derive a new state by applying changes to the current state
-   and such functions should be usable by multiple components.
-6. It should be easy to view the current and past states
-   in browser developer tools.
-7. It should be easy to see a log of all requested state changes
-   and the changes they caused.
-8. It should be easy to replay state changes backward and forward
-   and see resulting UI changes ("time travel debugging").
-9. State should survive browser refreshes and
-   the UI should re-render correctly.
+1.  Enable writing components that can just render
+    data passed to them (in React using "props").
+2.  It should be easy to specify the state properties
+    used by each component whose changes
+    should cause a component to re-render.
+3.  It should be easy to replace the current state with new state.
+4.  It should be easy to retrieve the current state.
+5.  It should be easy to register functions
+    that derive a new state by applying changes to the current state
+    and such functions should be usable by multiple components.
+6.  It should be easy to view the current and past states
+    in browser developer tools.
+7.  It should be easy to see a log of all requested state changes
+    and the changes they caused.
+8.  It should be easy to replay state changes backward and forward
+    and see resulting UI changes ("time travel debugging").
+9.  State should survive browser refreshes and
+    the UI should re-render correctly.
 
-The only approach for storing state that was listed earlier
-that can meet these goals is using a store.
+Use a store is a good step toward acheiving these goals.
 Many state management libraries support using a store,
 but most do not achieve all the listed goals.
 
@@ -74,11 +73,11 @@ and assess how it meets the goals listed earlier.
 The application creates greeting card content.
 It allows:
 
-1. selection of an occasion
-2. entry of a person's name
-3. entry of a message
-4. ability to "shout" the message (all uppercase)
-5. display of the card content
+1.  selection of an occasion
+2.  entry of a person's name
+3.  entry of a message
+4.  ability to "shout" the message (all uppercase)
+5.  display of the card content
 
 ![form screenshot](./greeting-cards-form.png)
 
@@ -98,20 +97,20 @@ to update the state in a particular way.
 The steps typically followed to support a new "action"
 in a React application that uses Redux are:
 
-1. Add a new action type constant.
-2. Write an "action creator function" that creates an action object
-   of a specific type and has the appropriate payload.
-   The payload is just the data needed to update the state.
-3. Modify the `switch` statement in a "reducer" function
-   to handle the new action type by building a new state
-   that incorporates the action payload.
-4. Write an event handling function in each component
-   that will "dispatch" the action.
-5. Register the event handling function so it will be
-   invoked at the appropriate time.  For example, this might
-   happen when a user presses a button or changes an input.
-6. Possibly add new properties to the object that
-   defines the initial state for the application.
+1.  Add a new action type constant.
+2.  Write an "action creator function" that creates an action object
+    of a specific type and has the appropriate payload.
+    The payload is just the data needed to update the state.
+3.  Modify the `switch` statement in a "reducer" function
+    to handle the new action type by building a new state
+    that incorporates the action payload.
+4.  Write an event handling function in each component
+    that will "dispatch" the action.
+5.  Register the event handling function so it will be
+    invoked at the appropriate time.  For example, this might
+    happen when a user presses a button or changes an input.
+6.  Possibly add new properties to the object that
+    defines the initial state for the application.
 
 ## Example App State
 
@@ -314,10 +313,10 @@ to state management can be found at
 Applications that use redux-easy must call `reduxSetup`.
 This function takes three arguments:
 
-1. the top component to be rendered, often named `App`
-2. the initial state for Redux as a JavaScript object
-3. the element where the component should be rendered
-   (defaults to the element with an id of `root`)
+1.  the top component to be rendered, often named `App`
+2.  the initial state for Redux as a JavaScript object
+3.  the element where the component should be rendered
+    (defaults to the element with an id of `root`)
 
 For example, if the top component is named `App`,
 the intialState is in a variable named `initialState`,
