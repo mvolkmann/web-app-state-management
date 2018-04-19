@@ -1,10 +1,11 @@
-# Web App State Management
+# Redux Simplied
 
 There are many approaches to managing state (data) in web applications.
 Often state management libraries are specific to a single framework
 such as Angular, React, or Vue.
 
 State can be stored in any of these locations:
+
 * the DOM
 * sessionStorage
 * localStorage
@@ -28,15 +29,15 @@ Goals for state management include:
 2. It should be easy to specify the state properties
    used by each component whose changes
    should cause a component to re-render.
-4. It should be easy to replace the current state with new state.
-5. It should be easy to retrieve the current state.
-3. It should be easy to write and register functions
+3. It should be easy to replace the current state with new state.
+4. It should be easy to retrieve the current state.
+5. It should be easy to register functions
    that derive a new state by applying changes to the current state
    and such functions should be usable by multiple components.
 6. It should be easy to view the current and past states
    in browser developer tools.
 7. It should be easy to see a log of all requested state changes
-   and the diffs they caused.
+   and the changes they caused.
 8. It should be easy to replay state changes backward and forward
    and see resulting UI changes ("time travel debugging").
 9. State should survive browser refreshes and
@@ -72,6 +73,7 @@ and assess how it meets the goals listed earlier.
 
 The application creates greeting card content.
 It allows:
+
 1. selection of an occasion
 2. entry of a person's name
 3. entry of a message
@@ -86,7 +88,7 @@ displays the card content.
 ![card screenshot](./greeting-cards-card.png)
 
 The code for this application can be found at
-https://github.com/mvolkmann/redux-greeting-card.
+<https://github.com/mvolkmann/redux-greeting-card>.
 
 ## Steps to support a new "action"
 
@@ -95,6 +97,7 @@ to update the state in a particular way.
 
 The steps typically followed to support a new "action"
 in a React application that uses Redux are:
+
 1. Add a new action type constant.
 2. Write an "action creator function" that creates an action object
    of a specific type and has the appropriate payload.
@@ -114,7 +117,7 @@ in a React application that uses Redux are:
 
 The state used by this application is specified in
 the variable `initialState` which is set in
-https://github.com/mvolkmann/redux-greeting-card/blob/master/src/index.js.
+<https://github.com/mvolkmann/redux-greeting-card/blob/master/src/index.js>.
 Here is that code:
 
 ```js
@@ -128,11 +131,12 @@ const initialState = {
 
 ## Supplying State to Components
 
-A component can specify the properties whose changes should
-cause it to be re-rendered by using a "connected component"
-that utilizes a `mapStateToProps` function.
+Using a `mapStateToProps` function, a component can copy state property values
+to component properties which causes the component to re-render when they change.
+Components that are attached to application state in this manner
+are referred to as "connected components.
 The Form component at
-https://github.com/mvolkmann/redux-greeting-card/blob/master/src/form.js
+<https://github.com/mvolkmann/redux-greeting-card/blob/master/src/form.js>
 does this with the following code:
 
 ```js
@@ -157,7 +161,7 @@ returned by a `mapDispatchToProps` function.
 It can call "action creator" functions to obtain the
 "action objects" that it passes to the Redux `dispatch` function.
 In the example app, the action creator functions are defined in
-https://github.com/mvolkmann/redux-greeting-card/blob/master/src/reducer.js.
+<https://github.com/mvolkmann/redux-greeting-card/blob/master/src/reducer.js>.
 Here is the `mapDispatchToProps` function from the `Form` component.
 
 ```js
@@ -297,7 +301,7 @@ let's see what we can do to simplify things.
 I have primarily used React over the last few years
 and have created a library that simplies the use of Redux.
 It is called redux-easy and can be found in npm at
-https://www.npmjs.com/package/redux-easy.
+<https://www.npmjs.com/package/redux-easy>.
 
 redux-easy uses the redux and react-redux npm packages under the covers,
 so existing apps that do the same can be gradually changed
@@ -305,10 +309,11 @@ to use redux-easy.
 
 A version of the sample app that uses a simpler approach
 to state management can be found at
-https://github.com/mvolkmann/redux-easy-greeting-card.
+<https://github.com/mvolkmann/redux-easy-greeting-card>.
 
 Applications that use redux-easy must call `reduxSetup`.
 This function takes three arguments:
+
 1. the top component to be rendered, often named `App`
 2. the initial state for Redux as a JavaScript object
 3. the element where the component should be rendered
@@ -318,11 +323,13 @@ For example, if the top component is named `App`,
 the intialState is in a variable named `initialState`,
 and there is an element with an id of `root`
 in the main HTML file, this will work:
+
 ```js
 reduxSetup({component: <App />, initialState});
 ```
 
 This one line replaces the following code in typical Redux usage:
+
 ```js
 import {Provider} from 'react-redux';
 import {createStore} from 'redux';
@@ -354,7 +361,7 @@ This is a fundamental part of React and
 
 In standard Redux this is done in the `mapStateToProps` function.
 But that function is passed the entire state and
-typically uses destructuring to pull on the properties of interest.
+typically uses destructuring to pull out the properties of interest.
 It can be simplified by supporting a `watch` function
 that accepts a component and
 a mapping of desired property names to paths within the state.
@@ -363,6 +370,7 @@ Here's an example.
 ```js
 export default watch(Card, {message: '', name: '', occasion: ''});
 ```
+
 This says that the `Card` component wants to get properties named
 `message`, `name`, and `occassion` from the state.
 The empty strings signify that the path to the state value
@@ -370,17 +378,19 @@ happens to match the name of the prop.
 Suppose we wanted a prop named `zip`, but it was located at
 `user.address.zipCode` in the state.
 In that case the object passed to `watch` would contain
+
 ```js
-zip: user.address.zipCode
+zip: 'user.address.zipCode'
 ```
+
 With this approach, the `mapStateToProps` function is not needed.
 The `watch` function returns a "higher-order component"
 that is used in place of the component passed to it.
 
 ### Goal #3: Easy to replace current state
 
-In standard Redux state is replaced in a reducer function.
-That is invoked when and action object is dispatched.
+In standard Redux state is replaced in a reducer function
+which is invoked when an action object is dispatched.
 Action objects are created by calling an action creator function.
 The action object has a type property whose value
 matches an action type string constant.
@@ -392,9 +402,11 @@ Too many steps are involved.
 An easier approach is to enable any component
 to import a `dispatch` function that accepts
 an action type and an optional payload.  For example,
+
 ```js
 dispatch('shout');
 ```
+
 This particular action doesn't require a payload.
 For actions that do, that is supplied as the
 second argument to the `dispatch` function.
@@ -405,6 +417,7 @@ In those cases another function can be used
 to specify the desired state change.
 For example, to change the `zipCode` of the current user
 we can do this:
+
 ```js
 dispatchSet('user.address.zipCode', newZipCode);
 ```
@@ -429,16 +442,18 @@ additional `dispatch*` methods provide an easier solution.
 `dispatchDelete` dispatches an `@@delete` action
 that deletes the state at a given path.
 For example:
+
 ```js
 dispatchDelete('user.lastName');
 ```
 
 `dispatchTransform` dispatches an `@@transform` action
-that transforms value of the state at a path.
+that transforms the value of the state at a path.
 It takes a path and a function.
 The function is passed the current value at the path
 and returns the new value.
 For example:
+
 ```js
 dispatchTransform('game.score', score => score + 1);
 ```
@@ -447,6 +462,7 @@ dispatchTransform('game.score', score => score + 1);
 that appends elements to an array.
 It takes a path to an array and any number of values to be appended.
 For example:
+
 ```js
 dispatchTransform('paint.colors', 'red', 'green', 'blue');
 ```
@@ -459,6 +475,7 @@ The function is passed each array element
 and should return true for elements to be retained
 and false for elements to be deleted.
 For example the following removes the color green from an array of colors:
+
 ```js
 dispatchFilter('paint.colors', color => color !== 'green');
 ```
@@ -469,6 +486,7 @@ It takes a path to an array and a function.
 The function is passed each array element
 and should return the new array element value.
 For example the follow doubles all the scores in an array:
+
 ```js
 dispatchMap('game.scores', score => score * 2);
 ```
@@ -487,6 +505,7 @@ This works great for components.
 But it would be nice to also allow non-component code,
 perhaps invoked by component code, to grab the current state.
 Such code can retrieve the `zipCode` of the current user as follows:
+
 ```js
 const zip = getState().user.address.zipCode;
 ```
@@ -508,6 +527,7 @@ This reducer can be invoked by calling `dispatch('shout')`.
 
 Here's another example that sets multiple state properties.
 For example:
+
 ```js
 addReducer('setRadius', (state, radius) => {
   const area = Math.PI * radius ** 2;
@@ -526,10 +546,11 @@ The `addReducer` function just adds to a map
 from action types (`shout` in this example)
 to functions that handle that type.
 When the supplied `reducer` function is invoked,
-finds the appropriate function from nthe map
+finds the appropriate function from the map
 and invokes it to obtain the new state.
 
-With this approach is it not necessary to:
+With this approach it is not necessary to:
+
 * define action type constants
 * write action creator functions
 * add a new case to the `switch` statement in a reducer function
@@ -539,7 +560,7 @@ With this approach is it not necessary to:
 The approach presented here builds on the redux npm package.
 This means that redux-devtools, a browser developer tool
 for Redux available for Chrome and Firefox at
-https://github.com/gaearon/redux-devtools,
+<https://github.com/gaearon/redux-devtools>,
 can still be used.
 That provides an easy way to view all the state history.
 
@@ -588,6 +609,7 @@ as follows:
 
 HTML `input` elements can be replaced by the `Input` component.
 For example,
+
 ```js
 <Input path="user.firstName" />
 ```
@@ -606,12 +628,14 @@ supply an `onChange` prop that refers to a function.
 
 HTML `textarea` elements can be replaced by the `TextArea` component.
 For example,
+
 ```js
 <TextArea path="feedback.comment" />
 ```
 
 HTML `select` elements can be replaced by the `Select` component.
 For example,
+
 ```js
 <Select path="user.favoriteColor">
   <option>red</option>
@@ -619,11 +643,13 @@ For example,
   <option>blue</option>
 </Select>
 ```
+
 If the `option` elements have a value attribute, those values
 are used instead of the text inside the `option`.
 
 For a set of radio buttons, use the `RadioButtons` component.
 For example,
+
 ```js
 <RadioButtons
   className="flavor"
@@ -631,7 +657,9 @@ For example,
   path="favoriteFlavor"
 />
 ```
+
 where `radioButtonList` is set as follows:
+
 ```js
 const radioButtonList = [
   {text: 'Chocolate', value: 'choc'},
@@ -639,15 +667,19 @@ const radioButtonList = [
   {text: 'Vanilla', value: 'van'}
 ];
 ```
+
 When a radio button is clicked, the state property `favoriteFlavor`
 is set the value of that radio button.
 
 For a set of checkboxes, use the `Checkboxes` component.
 For example,
+
 ```js
 <Checkboxes className="colors" list={checkboxList} />
 ```
+
 where `checkboxList` is set as follows:
+
 ```js
 const checkboxList = [
   {text: 'Red', path: 'color.red'},
@@ -655,6 +687,7 @@ const checkboxList = [
   {text: 'Blue', path: 'color.blue'}
 ];
 ```
+
 When a checkbox is clicked, the boolean value at the corresponding path
 is toggled between false and true.
 
@@ -666,6 +699,7 @@ it will wait for that `Promise` to resolve and then
 update the state to the resolved value of the `Promise`.
 
 Here's an example of such a reducer function:
+
 ```js
 addReducer('myAsyncThing', (state, payload) => {
   return new Promise(async (resolve, reject) => {
@@ -688,6 +722,7 @@ addReducer('myAsyncThing', (state, payload) => {
   });
 });
 ```
+
 ## Conclusion
 
 If you are using React, I encourage you to give redux-easy a try.
@@ -697,7 +732,7 @@ If you are not using React, I encourage you to implement
 a library like redux-easy for your framework of choice.
 I have started work on a library like this for Angular
 called ngrx-store-easy.
-See https://www.npmjs.com/search?q=ngrx-store-easy.
+See <https://www.npmjs.com/search?q=ngrx-store-easy>.
 
 Let's make state management easier for all the popular
 web app frameworks!
